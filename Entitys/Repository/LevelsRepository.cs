@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using ModelEntity.Model;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Entitys.Repository
@@ -18,12 +19,12 @@ namespace Entitys.Repository
         }
         public async Task<IEnumerable<Levels>> GetLevelsList()
         {
-           return await _db.Levels.ToListAsync();
+           return await _db.Levels.Include(x => x.Questions).Include(x => x.LevelsDescriptor).ToListAsync();
         }
 
         public async Task<Levels> GetLevel(int id)
         {
-            return await _db.Levels.FindAsync(id);           
+            return await _db.Levels.Include(x => x.Questions).Include(x => x.LevelsDescriptor).Where(x => x.Id == id).FirstOrDefaultAsync();
         }
 
         private bool disposed = false;
