@@ -44,6 +44,6 @@ namespace Entitys.Repository
             Dispose(true);
             GC.SuppressFinalize(this);
         }
-        // Check
+        // Check1
     }
 }
