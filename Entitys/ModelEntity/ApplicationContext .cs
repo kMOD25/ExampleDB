@@ -7,7 +7,7 @@ namespace Entitys.ModelEntity
     {
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlite(@"Server=(localdb)\mssqllocaldb;Database=NameDb;Trusted_Connection=True;");
+            optionsBuilder.UseSqlite("Filename=MyDatabase.db");
         }
         public DbSet<Levels> Levels { get; set; }
         public DbSet<LevelsDescriptors> LevelsDescriptors { get; set; }
