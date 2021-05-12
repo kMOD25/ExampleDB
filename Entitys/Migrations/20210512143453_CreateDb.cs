@@ -71,7 +71,6 @@ namespace Entitys.Migrations
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    LevelId = table.Column<string>(type: "TEXT", nullable: true),
                     Title = table.Column<string>(type: "TEXT", nullable: true),
                     LevelsId = table.Column<int>(type: "INTEGER", nullable: false),
                     QuestionDescriptorId = table.Column<int>(type: "INTEGER", nullable: true),

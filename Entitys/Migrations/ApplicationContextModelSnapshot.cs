@@ -56,9 +56,6 @@ namespace Entitys.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("LevelId")
-                        .HasColumnType("TEXT");
-
                     b.Property<int>("LevelsId")
                         .HasColumnType("INTEGER");
 

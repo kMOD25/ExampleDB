@@ -6,7 +6,6 @@ namespace ModelEntity.Model
     {
         [Key]
         public int Id { get; set; }
-        public string LevelId { get; set; }
         public string Title { get; set; }
         public int LevelsId { get; set; }
         public virtual QuestionsDescriptors QuestionDescriptor { get; set; }

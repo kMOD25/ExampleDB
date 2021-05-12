@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Entitys.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20210512140830_CreateDb")]
+    [Migration("20210512143453_CreateDb")]
     partial class CreateDb
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -57,9 +57,6 @@ namespace Entitys.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
-
-                    b.Property<string>("LevelId")
-                        .HasColumnType("TEXT");
 
                     b.Property<int>("LevelsId")
                         .HasColumnType("INTEGER");
