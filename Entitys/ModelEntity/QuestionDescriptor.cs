@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ModelEntity.Model
 {
-   public class QuestionsDescriptors
+   public class QuestionDescriptor
     {
         [Key]
         [ForeignKey("Id")]

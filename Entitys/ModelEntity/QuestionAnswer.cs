@@ -3,11 +3,11 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ModelEntity.Model
 {
-   public class LevelsDescriptors
+    public class QuestionAnswer
     {
         [Key]
         [ForeignKey("Id")]
         public int Id { get; set; }
-        public string Descriptor { get; set; }
+        public string Answer { get; set; }
     }
 }
