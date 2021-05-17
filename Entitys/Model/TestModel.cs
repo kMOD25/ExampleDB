@@ -26,6 +26,19 @@ namespace Entitys.Model
         }
 
 
+        /// <summary>Возвращает описание уровня.</summary>
+        /// <param name="levelId">Id уровня.</param>
+        /// <returns>Строку с описанием уровня.
+        /// Если оописание не найдено - возвращается <see cref="string.Empty"/>.</returns>
+        public string GeLevelDescriptor(int levelId)
+        {
+            using (var context = new ApplicationContext())
+                return context.LevelsDescriptors
+                    .Find(levelId)
+                    ?.Descriptor
+                    ?? string.Empty;
+        }
+
         /// <summary>Возвращает все вопросы уровня.</summary>
         /// <param name="levelId">Id уровня.</param>
         /// <returns>Последовательность кортежей id и title вопросов.</returns>
@@ -85,7 +98,7 @@ namespace Entitys.Model
                 {
                     if (!string.IsNullOrWhiteSpace(ans.answer) &&
                         rightAnswers.TryGetValue(ans.questionId, out var answer) &&
-                        string.Equals(ans.answer, answer.Answer,StringComparison.CurrentCultureIgnoreCase))
+                        string.Equals(ans.answer, answer.Answer, StringComparison.CurrentCultureIgnoreCase))
                         total++;
                 }
 

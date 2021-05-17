@@ -9,5 +9,4 @@ namespace TabItem.ViewModelInterfaces
 
         ICommand GetQuestionsCommand { get; }
     }
-
 }

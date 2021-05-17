@@ -4,6 +4,6 @@
              xmlns:local="clr-namespace:TabItem"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-         
+        <local:PageNavigator x:Key="pageNavigator"/>
     </Application.Resources>
 </Application>
