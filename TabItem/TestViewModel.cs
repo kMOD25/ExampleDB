@@ -20,17 +20,17 @@ namespace TabItem
         private ICommand _getQuestionsCommand;
         private ICommand _getResultCommand;
         private ICommand _startSelectLevelCommand;
-        private readonly ObservableCollection<IQuestionVM> questions = new ObservableCollection<IQuestionVM>();
-        private readonly ObservableCollection<ILevelVM> levels = new ObservableCollection<ILevelVM>();
+        private readonly ObservableCollection<IQuestionVM> questions = new();
+        private readonly ObservableCollection<ILevelVM> levels = new();
 
         public TestViewModel(TestModel model)
         {
             this.model = model;
+            StartSelectLevelExecute();
         }
 
         public IEnumerable<ILevelVM> Levels => levels;
-        public ICommand GetQuestionsCommand => _getQuestionsCommand
-            ?? (_getQuestionsCommand = new RelayCommand(GetQuestionsExecute, GetQuestionsCanExecute));
+        public ICommand GetQuestionsCommand => _getQuestionsCommand ??= new RelayCommand(GetQuestionsExecute, GetQuestionsCanExecute);
 
         private bool GetQuestionsCanExecute()
             => SelectedLevel != null;
@@ -38,9 +38,9 @@ namespace TabItem
         private void GetQuestionsExecute()
         {
             questions.Clear();
-            foreach (var question in model.GetLevelQuestions(SelectedLevel.Id))
+            foreach ((int id, string title) in model.GetLevelQuestions(SelectedLevel.Id))
             {
-                questions.Add(new QuestionVM(question.id, question.title, GetQuestionDescriptor));
+                questions.Add(new QuestionVM(id, title, GetQuestionDescriptor));
             }
         }
 
@@ -48,27 +48,23 @@ namespace TabItem
             => model.GeQuestionDescriptor(questionId);
 
         public IEnumerable<IQuestionVM> Questions => questions;
-        public ICommand GetResultCommand => _getResultCommand
-            ?? (_getResultCommand = new RelayCommand(GetResultExecute));
+        public ICommand GetResultCommand => _getResultCommand ??= new RelayCommand(GetResultExecute);
 
         private void GetResultExecute(object parameter)
         {
-            var result = model.RateAnswers(SelectedLevel.Id, questions.Select(qst => (qst.Id, qst.Answer)));
-            TotalCount = result.totalCount;
-            RightCount = result.rightCount;
+            (TotalCount, RightCount) = model.RateAnswers(SelectedLevel.Id, questions.Select(qst => (qst.Id, qst.Answer)));
         }
 
         public int TotalCount { get => _totalCount; private set => Set(ref _totalCount, value); }
         public int RightCount { get => _rightCount; private set => Set(ref _rightCount, value); }
-        public ICommand StartSelectLevelCommand => _startSelectLevelCommand
-            ?? (_startSelectLevelCommand = new RelayCommand(StartSelectLevelExecute));
+        public ICommand StartSelectLevelCommand => _startSelectLevelCommand ??= new RelayCommand(StartSelectLevelExecute);
 
         private void StartSelectLevelExecute()
         {
             levels.Clear();
-            foreach (var level in model.GetAllLevels())
+            foreach ((int id, string title) in model.GetAllLevels())
             {
-                levels.Add(new LevelVM(level.id, level.title, GetQuestionDescriptor));
+                levels.Add(new LevelVM(id, title, GetLevelDescriptor));
             }
         }
 

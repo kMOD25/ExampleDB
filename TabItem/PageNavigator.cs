@@ -2,8 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
 using TabItem.ViewModelInterfaces;
 
@@ -11,73 +9,82 @@ namespace TabItem
 {
     public class PageNavigator : BaseInpc
     {
-        private readonly Dictionary<Type, (Type type, string title)> titles = new Dictionary<Type, (Type type, string title)>()
-        {
-            {typeof(ILevelsVM), (typeof(IQuestionsVM), "Начать тест")},
-            {typeof(IQuestionsVM), (typeof(IResultVM), "Получить результат")},
-            {typeof(IResultVM), (typeof(ILevelsVM), "Начать тест заново")},
-        };
+        #region Поля для хранения значений свойств
         private Type _typeCurrentPage;
         private ICommand _navigatorCommand;
         private ITestVM _testVM;
         private string _titleNavigatorButton;
+        #endregion
 
+        /// <summary>ViewModel Окна.</summary>
         public ITestVM TestVM { get => _testVM; set => Set(ref _testVM, value); }
 
+        /// <summary>Тип текущей страницы навигатора.</summary>
         public Type TypeCurrentPage { get => _typeCurrentPage; set => Set(ref _typeCurrentPage, value); }
 
+        /// <summary>Название кнопки навигации на текущей странице.</summary>
         public string TitleNavigatorButton { get => _titleNavigatorButton; set => Set(ref _titleNavigatorButton, value); }
 
-        public ICommand NavigatorCommand => _navigatorCommand
-            ?? (_navigatorCommand = new RelayCommand(NavigatorExecute, NavigatorCanExecute));
+        // Словарь данных. Содержит для теущего типа: следующий тип,
+        // текст кнопки навигации, команду VM выполняемую перед навигацией.
+        private readonly Dictionary<Type, (Type type, string title, Func<ICommand> command)> datas;
 
+        /// <summary>Создаёт экземпляр навигатора.</summary>
+        public PageNavigator()
+        {
+            datas = new Dictionary<Type, (Type type, string title, Func<ICommand> command)>()
+            {
+                {typeof(ILevelsVM), (typeof(IQuestionsVM), "Начать тест", () => TestVM?.GetQuestionsCommand)},
+                {typeof(IQuestionsVM), (typeof(IResultVM), "Получить результат", () => TestVM?.GetResultCommand)},
+                {typeof(IResultVM), (typeof(ILevelsVM), "Начать тест заново", () => TestVM?.StartSelectLevelCommand)},
+            };
+            TypeCurrentPage = datas.Keys.First();
+        }
+
+        /// <summary>Команда кнопки навигации.</summary>
+        public ICommand NavigatorCommand => _navigatorCommand ??= new RelayCommand(NavigatorExecute, NavigatorCanExecute);
+
+        /// <summary>Метод состояния команды.</summary>
+        /// <returns><see langword="true"/> если выполнение команды допустимо.</returns>
         private bool NavigatorCanExecute()
         {
-            if (TestVM == null)
+            if (!datas.TryGetValue(TypeCurrentPage, out (Type type, string title, Func<ICommand> command) data))
+                throw new Exception("Недопустимый тип.");
+
+            var command = data.command();
+
+            if (command == null)
                 return false;
 
-            if (TypeCurrentPage == typeof(ILevelsVM))
-                return TestVM.GetQuestionsCommand.CanExecute(null);
-            if (TypeCurrentPage == typeof(IQuestionsVM))
-                return TestVM.GetResultCommand.CanExecute(null);
-            if (TypeCurrentPage == typeof(IResultVM))
-                return TestVM.StartSelectLevelCommand.CanExecute(null);
-
-            throw new Exception("Недопустимый тип.");
+            return command.CanExecute(null);
         }
 
+        /// <summary>Метод исполнения команды.</summary>
         private void NavigatorExecute()
         {
-            if (TestVM == null)
+
+            if (!datas.TryGetValue(TypeCurrentPage, out (Type type, string title, Func<ICommand> command) data))
+                throw new Exception("Недопустимый тип.");
+
+            var command = data.command();
+
+            if (command == null)
                 return;
 
-            if (TypeCurrentPage == typeof(ILevelsVM))
-            {
-                if (TestVM.GetQuestionsCommand.TryExecute(null))
-                    TypeCurrentPage = typeof(IQuestionsVM);
-            }
+            if (command.TryExecute())
+                TypeCurrentPage = datas[TypeCurrentPage].type;
 
-            else if (TypeCurrentPage == typeof(IQuestionsVM))
-            {
-                if (TestVM.GetResultCommand.TryExecute(null))
-                    TypeCurrentPage = typeof(IResultVM);
-            }
-
-            else if (TypeCurrentPage == typeof(IResultVM))
-            {
-                if (TestVM.StartSelectLevelCommand.TryExecute(null))
-                    TypeCurrentPage = typeof(ILevelsVM);
-            }
-
-            throw new Exception("Недопустимый тип.");
         }
 
+        // Метод вызываемый при изменеии свойств методм Set.
+        // Используется для задания зависимостей свойств.
         protected override void OnPropertyChanged(string propertyName, object oldValue, object newValue)
         {
             base.OnPropertyChanged(propertyName, oldValue, newValue);
 
-            if (propertyName == nameof(TypeCurrentPage))
-                TitleNavigatorButton = titles[TypeCurrentPage].title;
+            // Задание зависимости свойства TitleNavigatorButton от свойства TypeCurrentPage
+            if (string.IsNullOrEmpty(propertyName) || propertyName == nameof(TypeCurrentPage))
+                TitleNavigatorButton = datas[TypeCurrentPage].title;
         }
     }
 }

@@ -20,8 +20,7 @@ namespace TabItem
                 this.getDescriptor = getDescriptor;
             }
 
-            public string Descriptor => _descriptor
-                ?? (_descriptor = getDescriptor(Id));
+            public string Descriptor => _descriptor ??= getDescriptor(Id);
         }
     }
 }

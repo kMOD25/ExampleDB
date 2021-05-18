@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Entitys.Model;
 using System.Windows;
 
 namespace TabItem
@@ -13,5 +8,11 @@ namespace TabItem
     /// </summary>
     public partial class App : Application
     {
+        private void OnStartup(object sender, StartupEventArgs e)
+        {
+            PageNavigator pageNavigator = (PageNavigator)Resources["pageNavigator"];
+
+            pageNavigator.TestVM = new TestViewModel(new TestModel());
+        }
     }
 }
