@@ -66,6 +66,9 @@ namespace TabItem
             {
                 levels.Add(new LevelVM(id, title, GetLevelDescriptor));
             }
+
+            if (SelectedLevel != null)
+                SelectedLevel = levels.FirstOrDefault(lvl => lvl.Id == SelectedLevel.Id);
         }
 
         private string GetLevelDescriptor(int levelId)

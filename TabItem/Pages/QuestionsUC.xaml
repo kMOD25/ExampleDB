@@ -33,7 +33,8 @@
                         <TextBlock Text="{Binding Descriptor}"
                                    FontSize="20" VerticalAlignment="Center" HorizontalAlignment="Center"
                                    Margin="5" Background="Bisque" Padding="10" TextWrapping="Wrap"/>
-                        <TextBox Text="{Binding Answer}" Margin="5" Background="LightPink"
+                        <TextBox Text="{Binding Answer, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                 Margin="5" Background="LightPink"
                                  Padding="10" MinWidth="100" TextWrapping="Wrap"
                                  VerticalAlignment="Center" HorizontalAlignment="Center"/>
                     </UniformGrid>

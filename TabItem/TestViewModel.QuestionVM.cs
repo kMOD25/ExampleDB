@@ -1,14 +1,16 @@
-﻿using System;
+﻿using Simplified;
+using System;
 using TabItem.ViewModelInterfaces;
 
 namespace TabItem
 {
     public partial class TestViewModel
     {
-        class QuestionVM : IQuestionVM
+        class QuestionVM : BaseInpc, IQuestionVM
         {
             private readonly Func<int, string> getDescriptor;
             private string _descriptor;
+            private string _answer;
 
             public int Id { get; }
             public string Title { get; }
@@ -22,7 +24,7 @@ namespace TabItem
 
             public string Descriptor => _descriptor
                 ?? (_descriptor = getDescriptor(Id));
-            public string Answer { get; set; }
+            public string Answer { get => _answer; set => Set(ref _answer, value); }
         }
     }
 }
